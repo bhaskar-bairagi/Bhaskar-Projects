@@ -1,0 +1,50 @@
+name: Auto PR develop -> test
+
+on:
+  push:
+    branches: [ develop ]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  create-or-update-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Count commits ahead of test
+        id: count
+        run: |
+          git fetch origin test develop
+          COUNT=$(git rev-list --count origin/test..origin/develop)
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
+      - name: Check for existing open PR
+        id: existing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=$(gh pr list --base test --head develop --state open --json number --jq '.[0].number')
+          echo "number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+
+      - name: Create PR if none exists
+        if: steps.existing.outputs.number == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create --base test --head develop \
+            --title "Initial commit for test${{ steps.count.outputs.count }}" \
+            --body "Auto-generated gate PR. Approve to deploy to dev env (simulated)."
+
+      - name: Update PR title if one already exists
+        if: steps.existing.outputs.number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr edit ${{ steps.existing.outputs.number }} \
+            --title "Initial commit for test${{ steps.count.outputs.count }}"

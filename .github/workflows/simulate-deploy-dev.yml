@@ -1,0 +1,12 @@
+name: Simulate Deploy to Dev
+
+on:
+  push:
+    branches: [ test ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Simulated deployment
+        run: echo "🚀 Simulated deployment to DEV environment — commit ${{ github.sha }}"
