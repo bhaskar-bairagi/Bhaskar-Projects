@@ -1,0 +1,107 @@
+name: "Python & Cloud Native Security Scanning"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '0 0 * * 1' # Weekly automated baseline scan
+
+permissions:
+  contents: read
+  security-events: write # Required to upload alerts to GitHub Security tab
+  actions: read
+
+jobs:
+  # 1. SECRET SCANNING: Catches accidentally committed passwords/tokens
+  secret-scan:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetches full history to catch hidden secrets in commits
+
+      - name: GitGuardian Scan
+        uses: GitGuardian/ggshield-action@v1.30.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
+
+  # 2. PYTHON SAST & SCA: Checks Python source code & pip dependencies
+  python-security:
+    name: Python SAST & SCA
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # Bandit checks Python source code for security flaws (like hardcoded paths or eval statements)
+      - name: Run Bandit (SAST)
+        run: |
+          pip install bandit
+          bandit -r . -x ./tests -ll
+
+      # Safety checks installed packages against a known vulnerability database
+      - name: Run Safety (SCA)
+        run: |
+          pip install safety
+          safety check --full-report
+
+  # 3. CODEQL ADVANCED SAST: GitHub's deep semantic analysis for Python
+  codeql-analysis:
+    name: CodeQL Python Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: 'python'
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
+  # 4. INFRASTRUCTURE & CONTAINER SCAN: Audits Dockerfiles, K8s YAMLs, and built images
+  infrastructure-security:
+    name: Container & K8s Manifest Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Scans local Dockerfile configurations and Kubernetes manifests for misconfigurations
+      - name: Misconfiguration Scan (Docker & K8s)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          hide-progress: false
+          exit-code: '1' # Fails the build if critical misconfigurations are found
+          severity: 'CRITICAL,HIGH'
+
+      # Optional: Build and scan the actual container image before pushing to a registry
+      - name: Build Local Docker Image
+        run: |
+          docker build -t my-python-app:${{ github.sha }} .
+
+      - name: Scan Built Container Image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'my-python-app:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
