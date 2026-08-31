@@ -1,0 +1,6 @@
+streamlit>=1.38,<2
+openai>=2,<3
+pydantic>=2.8,<3
+pandas>=2.0,<3
+pypdf>=5,<7
+jupyter>=1.0,<2
