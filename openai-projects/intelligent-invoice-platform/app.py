@@ -68,4 +68,3 @@ if results is not None:
         mime="text/csv",
     )
     st.info("Your original PDF files are not renamed, moved, or deleted.")
-

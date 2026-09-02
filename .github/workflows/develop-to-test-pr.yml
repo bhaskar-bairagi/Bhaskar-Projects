@@ -17,6 +17,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Ensure test branch exists
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if ! git ls-remote --exit-code --heads origin test > /dev/null 2>&1; then
+            git checkout -b test origin/main
+            git push origin test
+          fi
+
       - name: Count commits ahead of test
         id: count
         run: |

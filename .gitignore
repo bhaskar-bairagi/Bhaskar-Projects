@@ -3,4 +3,6 @@ __pycache__/
 .ipynb_checkpoints/
 venv/
 .venv/
-.env.example
+*.py[cod]
+# Personal résumé material
+openai-projects/intelligent-invoice-platform/docs/RESUME.md
