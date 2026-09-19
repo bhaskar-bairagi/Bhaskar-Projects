@@ -1,0 +1,1 @@
+{"name":"quality_checks","description":"Show quality checks for a synthetic run","inputs":["run_id"]}
