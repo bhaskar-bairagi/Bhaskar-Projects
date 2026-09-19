@@ -1,0 +1,5 @@
+transaction_id,amount,currency
+TX-100,100.00,GBP
+TX-101,44.50,GBP
+TX-102,20.00,GBP
+TX-104,8.00,EUR
