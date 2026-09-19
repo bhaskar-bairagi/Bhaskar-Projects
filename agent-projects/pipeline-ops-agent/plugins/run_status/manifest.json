@@ -1,0 +1,1 @@
+{"name":"run_status","description":"Inspect one synthetic pipeline run","inputs":["run_id"]}
