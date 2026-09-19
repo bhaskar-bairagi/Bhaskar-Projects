@@ -1,0 +1,4 @@
+run_id,pipeline,status,rows_received,rows_loaded
+R-001,payment_settlements,SUCCESS,120,120
+R-002,payment_settlements,FAILED,120,115
+R-003,vendor_master,SUCCESS,32,32
