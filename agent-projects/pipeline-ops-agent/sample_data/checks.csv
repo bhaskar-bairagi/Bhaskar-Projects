@@ -1,0 +1,6 @@
+run_id,check,status,detail
+R-001,record_count,PASS,Counts agree
+R-001,unique_transaction,PASS,No duplicates
+R-002,record_count,FAIL,Five records rejected
+R-002,unique_transaction,FAIL,Duplicate transaction IDs
+R-003,record_count,PASS,Counts agree
