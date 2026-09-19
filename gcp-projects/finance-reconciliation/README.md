@@ -38,7 +38,7 @@ flowchart TD
 | Review | Looker Studio exception dashboard |
 | Scheduling | Cloud Composer DAG or Workflows |
 
-The local program is the implemented artifact. The GCP mapping is an interview discussion guide; no GCP deployment or production performance is claimed.
+The local program is the implemented artifact. The GCP mapping is a learning reference; no GCP deployment or production performance is claimed.
 
 ## Design decisions and boundaries
 
@@ -48,6 +48,6 @@ The local program is the implemented artifact. The GCP mapping is an interview d
 - Matching is one-to-one on transaction ID. Real reconciliation also needs settlement batches, fees, refunds, time windows, late arrivals, idempotency, and audit controls.
 - Uploaded files are processed in memory. Run locally with synthetic data; no authentication or persistent storage is provided.
 
-## Interview walkthrough
+## Explore further
 
-Explain the five sample outcomes, then discuss how you would handle duplicate settlement IDs, delayed files, source lineage, access control, and an operator-approved correction. Show the tests and separate the local implementation from the GCP reference design.
+Inspect the five sample outcomes, then try extending the rules for duplicate settlement IDs, delayed files, source lineage, access control, and an operator-approved correction. Keep the local implementation distinct from the GCP reference design.
