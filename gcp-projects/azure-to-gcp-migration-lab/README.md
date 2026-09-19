@@ -40,6 +40,6 @@ The rule engine is intentionally small and inspectable. A real assessment needs 
 
 Inspired by the user's Google Cloud training notes on VM planning, migration to Compute Engine, container migration, and incremental monolith decomposition. This project uses an original synthetic scenario and implementation, not the lab text, temporary credentials, or obsolete step-by-step cloud commands. The staged service separation in the monolith lesson informs the container route; it is not implemented as a Kubernetes deployment here.
 
-## Interview walkthrough
+## Explore further
 
-Explain why local state favors a conservative first step, why a pilot should have few dependencies, how Azure and GCP identities remain separate, and which checks trigger rollback. Challenge the simple rules with a counterexample and describe what evidence you would collect before an actual cutover.
+Try a workload with local state, several dependencies, and regulated data. Inspect how each input changes the result. Challenge the simple rules with a counterexample and identify what evidence would be needed before an actual cutover.
