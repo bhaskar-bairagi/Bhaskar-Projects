@@ -1,0 +1,18 @@
+name: Learning labs
+on:
+  push:
+    paths: ["gcp-projects/**", ".github/workflows/learning-labs.yml"]
+  pull_request:
+    paths: ["gcp-projects/**", ".github/workflows/learning-labs.yml"]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Test finance lab
+        run: python -m unittest discover -s gcp-projects/finance-reconciliation -p 'test_*.py'
+      - name: Test migration lab
+        run: python -m unittest discover -s gcp-projects/azure-to-gcp-migration-lab -p 'test_*.py'
